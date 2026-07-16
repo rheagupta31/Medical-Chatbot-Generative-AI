@@ -1,11 +1,18 @@
-sentence-transformers==2.2.2
+sentence-transformers>=2.7.0
 langchain
-flask
+fastapi
+uvicorn[standard]
+pydantic-settings
+jinja2
 pypdf
 python-dotenv
 pinecone[grpc]
 langchain-pinecone
 langchain_community
+langchain_text_splitters
+langchain_huggingface
 langchain_openai
-langchain_experimental
+langchain-google-genai
+pytest
+httpx
 -e .

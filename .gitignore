@@ -205,3 +205,12 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# macOS junk
+.DS_Store
+
+# local assistant/tool config
+.claude/
+
+# corrupted original data (copyrighted, unusable)
+Data/_corrupted_original/
