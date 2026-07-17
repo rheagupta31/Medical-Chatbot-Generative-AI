@@ -1,5 +1,7 @@
 # MediBot &mdash; Medical Chatbot (Generative AI, RAG)
 
+[![CI](https://github.com/rheagupta31/Medical-Chatbot-Generative-AI/actions/workflows/ci.yml/badge.svg)](https://github.com/rheagupta31/Medical-Chatbot-Generative-AI/actions/workflows/ci.yml)
+
 A retrieval-augmented generation (RAG) chatbot that answers medical information
 questions using reference PDFs in `Data/` (currently public-domain NIH patient
 guides), Pinecone for vector search, and OpenAI or Gemini for generation.
@@ -129,6 +131,35 @@ pytest tests/
 ```
 
 Tests mock the RAG chain, so they run without live API keys or network calls.
+They also run in CI (GitHub Actions) on every push, alongside `ruff` linting.
+
+## Evaluation
+
+The project ships an eval harness (`evals/`) with a 30-question golden dataset
+covering three behaviors: **answerable** questions (must retrieve the right
+chunks and stay grounded in them), **must-refuse** questions (drug dosages,
+prices, off-domain — the bot must say it doesn't have verified data rather
+than guess), and **emergency** questions (must direct the user to emergency
+services).
+
+```bash
+python -m evals                      # retrieval hit rate - free, no LLM calls
+python -m evals --mode full          # + groundedness (LLM-as-judge), refusals, escalation
+python -m evals --mode full --limit 3  # cap questions per category (saves API quota)
+```
+
+Latest results (2026-07-13, `gemini-flash-lite-latest`):
+
+| Metric | Score | Notes |
+|---|---|---|
+| Retrieval hit rate | 20/20 (100%) | expected keywords found in top-3 retrieved chunks |
+| Groundedness (LLM-as-judge) | 1/1 (100%) | sampled with `--limit 1` due to free-tier daily quota |
+| Refusal correctness | 1/1 (100%) | sampled with `--limit 1` |
+| Emergency escalation | 1/1 (100%) | sampled with `--limit 1` |
+
+The full-mode run is quota-limited on the free Gemini tier (~3 LLM calls per
+answerable question); re-run with a higher `--limit` on a paid key for
+complete coverage.
 
 ## Limitations & Roadmap
 

@@ -12,6 +12,9 @@ from src.config import get_settings
 from src.rag_chain import MedicalRagChain
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s:     %(name)s - %(message)s")
+# keep our INFO logs (timings, errors) but silence noisy library chatter
+for noisy in ("httpx", "huggingface_hub", "sentence_transformers", "urllib3"):
+    logging.getLogger(noisy).setLevel(logging.WARNING)
 logger = logging.getLogger("medibot")
 
 

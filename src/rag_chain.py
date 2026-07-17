@@ -82,7 +82,7 @@ class MedicalRagChain:
         self._answer_chain = prompt | llm | StrOutputParser()
         self._history = SessionHistoryStore(max_turns=settings.max_history_turns)
 
-    def ask(self, session_id: str, question: str) -> dict:
+    def ask(self, session_id: str, question: str, return_context: bool = False) -> dict:
         chat_history = self._history.get(session_id)
 
         # Rewrite before retrieval: resolves follow-up references against the
@@ -116,4 +116,7 @@ class MedicalRagChain:
         self._history.append(session_id, question, answer)
 
         sources = sorted({doc.metadata.get("source", "unknown") for doc in docs})
-        return {"answer": answer, "disclaimer": DISCLAIMER, "sources": sources}
+        result = {"answer": answer, "disclaimer": DISCLAIMER, "sources": sources}
+        if return_context:
+            result["context_text"] = context
+        return result

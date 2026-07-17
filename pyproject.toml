@@ -1,0 +1,3 @@
+[tool.ruff]
+extend-exclude = ["research", ".venv"]
+line-length = 100
